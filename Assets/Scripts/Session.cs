@@ -39,7 +39,7 @@ namespace KillingJoke.Core
                 jokers.Add(joker);
 
                 var zOffset = 1 + 2f * Mathf.Sin((Mathf.PI / (jokerCount - 1)) * i);
-                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, -zOffset);
+                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0.56f, -zOffset);
 
                 joker.SetMesh(jokerFactory.JokersPool[UnityEngine.Random.Range(0, jokerFactory.JokersPool.Length)]);
             }
