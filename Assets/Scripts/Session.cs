@@ -32,14 +32,16 @@ namespace KillingJoke.Core
             Initialize();
 
             jokers = new List<Joker>();
-            float width = 1;
+            float width = 1.5f;
             for (int i = 0; i < jokerCount; i++)
             {
                 Joker joker = jokerFactory.Generate(attributes: Joker.Attributes.GetRandomAttributes());
                 jokers.Add(joker);
 
-                var zOffset = 5 + 0.75f * Mathf.Sin((Mathf.PI / (jokerCount - 1)) * i);
-                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, zOffset);
+                var zOffset = 1 + 2f * Mathf.Sin((Mathf.PI / (jokerCount - 1)) * i);
+                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, -zOffset);
+
+                joker.SetMesh(jokerFactory.JokersPool[UnityEngine.Random.Range(0, jokerFactory.JokersPool.Length)]);
             }
             this.jokersCount = jokerCount;
 

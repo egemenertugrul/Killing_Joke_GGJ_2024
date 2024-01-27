@@ -81,6 +81,7 @@ namespace KillingJoke.Core
                 newSession.Initialize(jokerFactory, jokerCount);
             else
                 newSession.Initialize(jokers);
+            
 
             newSession.OnEnd.AddListener((aliveJokers) =>
             {

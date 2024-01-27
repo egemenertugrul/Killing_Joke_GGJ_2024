@@ -22,8 +22,6 @@ namespace KillingJoke.Core
 
         private void Awake()
         {
-            outline = gameObject.AddComponent<Outline>();
-            outline.OutlineWidth = 0;
         }
 
         private void ResetHighlight()
@@ -45,6 +43,28 @@ namespace KillingJoke.Core
             SelectRandomVoiceSetting();
         }
 
+        public void SetMesh(GameObject mesh)
+        {
+            transform.LookAt(Camera.main.transform);
+            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+
+            Instantiate(mesh, transform);
+            outline = GetComponentInChildren<SkinnedMeshRenderer>().gameObject.AddComponent<Outline>();
+            outline.OutlineWidth = 0;
+
+            //for (int i = 0; i < jokerMeshBase.childCount; i++)
+            //{
+            //    var child = jokerMeshBase.GetChild(i);
+            //    if (child.name == "Pose")
+            //    {
+            //        Destroy(child);
+            //    }
+            //}
+            //SkinnedMeshRenderer smr = GetComponentInChildren<SkinnedMeshRenderer>();
+            //if (smr)
+            //    smr.rootBone = jokerMeshBase.transform;
+        }
+
         private void SelectRandomVoiceSetting()
         {
             int randomIndex = Random.Range(0, TTSManager.Instance.Presets.Length);
@@ -62,6 +82,7 @@ namespace KillingJoke.Core
         public void Kill()
         {
             Debug.Log($"Killed Joker {attributes.ID}");
+            GetComponentInChildren<RagdollOnOffSwitch>()?.RagdollOn();
             isAlive = false;
             HideSubtitle();
 

@@ -9,7 +9,7 @@ namespace KillingJoke.Core
     {
         public UnityEvent<IHMDHighlightable> OnNewHighlight = new UnityEvent<IHMDHighlightable>();
 
-        private const float MaxDistance = 100f;
+        private const float MaxDistance = 200f;
         RaycastHit[] hits = null;
         private IHMDHighlightable lastHighlighted;
 
@@ -35,7 +35,7 @@ namespace KillingJoke.Core
         void FixedUpdate()
         {
             Ray ray = new Ray(transform.position, transform.forward);
-            hits = Physics.SphereCastAll(ray, 0.5f, MaxDistance, ~0);
+            hits = Physics.RaycastAll(ray, MaxDistance, ~0);
             Debug.DrawRay(ray.origin, ray.direction, Color.red);
             for (int i = 0; i < hits.Length; i++)
             {
