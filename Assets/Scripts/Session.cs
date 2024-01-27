@@ -68,7 +68,7 @@ namespace KillingJoke.Core
             ChatGPT.Instance.GetReply(voiceInput, (replies) =>
             {
                 var formattedReplies = replies.Split(";").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
-                print(replies);
+                Debug.Log(replies);
 
                 try
                 {

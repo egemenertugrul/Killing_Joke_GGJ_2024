@@ -73,6 +73,7 @@ namespace KillingJoke.Core
                     _gameManager.CurrentSession.SetReplies(voiceInput);
             });
         }
+
         public void StopTellDefault()
         {
             _gameManager.CurrentSession.SetReplies("Tell me a joke");

@@ -24,6 +24,13 @@ namespace Meta.Voice.Samples.Dictation
 
         public UnityEvent<string> OnDictationStopped = new UnityEvent<string>();
 
+
+        [SerializeField] private MultiRequestTranscription multiRequestTranscription;
+
+        private readonly float clearDelay = 2f;
+        private float lastTranscriptionUpdateTime;
+        private bool shouldClear;
+
         public bool IsActive
         {
             get
@@ -64,6 +71,21 @@ namespace Meta.Voice.Samples.Dictation
             {
                 OnDictationStopped.Invoke(TranscribedText);
             });
+        }
+
+        public void MultiRequestTranscriptionUpdated()
+        {
+            lastTranscriptionUpdateTime = Time.time;
+            shouldClear = true;
+        }
+
+        private void Update()
+        {
+            if (shouldClear && Time.time - lastTranscriptionUpdateTime >= clearDelay)
+            {
+                multiRequestTranscription.Clear();
+                shouldClear = false;
+            }
         }
     }
 }

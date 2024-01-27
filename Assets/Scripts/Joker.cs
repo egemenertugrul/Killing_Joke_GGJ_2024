@@ -3,6 +3,7 @@ using Meta.WitAi.TTS.Data;
 using Meta.WitAi.TTS.Integrations;
 using Meta.WitAi.TTS.Utilities;
 using OpenAI;
+using TMPro;
 using UnityEngine;
 
 namespace KillingJoke.Core
@@ -17,6 +18,7 @@ namespace KillingJoke.Core
         public bool IsAlive { get => isAlive; }
 
         private string _speakPhrase = "";
+        [SerializeField] private TextMeshProUGUI subtitleText;
 
         private void Awake()
         {
@@ -33,6 +35,7 @@ namespace KillingJoke.Core
         {
             _speakPhrase = joke;
             ResetHighlight();
+            HideSubtitle();
         }
 
         public override void Initialize(Attributes attributes)
@@ -60,6 +63,7 @@ namespace KillingJoke.Core
         {
             Debug.Log($"Killed Joker {attributes.ID}");
             isAlive = false;
+            HideSubtitle();
 
             if (TTSManager.Instance.LastSpokeEntityID == attributes.ID)
                 TTSManager.Instance.StopSpeaking();
@@ -79,7 +83,14 @@ namespace KillingJoke.Core
             }
 
             Debug.Log($"Joker {attributes.ID} is speaking: {_speakPhrase}");
+            subtitleText.text = _speakPhrase;
+            Invoke("HideSubtitle", 10f); // stinky code
             TTSManager.Instance.Speak(voiceSetting, _speakPhrase, attributes.ID, transform);
+        }
+
+        private void HideSubtitle()
+        {
+            subtitleText.text = "";
         }
 
         public void Highlight()
