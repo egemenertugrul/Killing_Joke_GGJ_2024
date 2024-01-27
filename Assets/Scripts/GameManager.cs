@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Meta.Voice.Samples.Dictation;
 
 namespace KillingJoke.Core
 {
@@ -20,45 +21,48 @@ namespace KillingJoke.Core
             Execute
         }
 
-        [SerializeField] SelectorUnityEventWrapper thumbsUpLeft, thumbsUpRight;
-        [SerializeField] SelectorUnityEventWrapper thumbsDownLeft, thumbsDownRight;
+        
         [SerializeField] HmdRaycaster hmdRaycaster;
-
+        [SerializeField] DictationActivation _dictation_activation;
+            
         [SerializeField] private JokerFactory jokerFactory;
         [Range(1, 10)][SerializeField] private int jokerCount;
 
-        List<SelectorUnityEventWrapper> thumbsUps, thumbsDowns;
         GameState state = GameState.Execute;
-        private Joker activeJoker;
+        private StateMachine _stateMachine;
+        private Joker _activeJoker;
 
-        private Session currentSession;
-
+        private Session _currentSession;
+        public Session CurrentSession
+        {
+            get => _currentSession;
+        }
+        public Joker ActiveJoker
+        {
+            get => _activeJoker;
+        }
         void Start()
         {
-            thumbsUps = new List<SelectorUnityEventWrapper> { thumbsUpLeft, thumbsUpRight };
-            thumbsDowns = new List<SelectorUnityEventWrapper> { thumbsDownLeft, thumbsDownRight };
 
-            thumbsUps.ForEach(u => u.WhenSelected.AddListener(OnThumbsUpAction));
-            thumbsDowns.ForEach(u => u.WhenSelected.AddListener(OnThumbsDownAction));
-
+            _stateMachine.Init(this);
             hmdRaycaster.OnNewHighlight.AddListener(SetActiveJoker);
 
-            currentSession = StartNewSession();
+            _currentSession = StartNewSession();
+            
         }
-
         private void SetActiveJoker(IHMDHighlightable highlighted)
         {
             Joker highlightedJoker = (Joker)highlighted;
             if (highlightedJoker.IsAlive)
-                activeJoker = highlightedJoker;
+                _activeJoker = highlightedJoker;
         }
 
         private Session StartNewSession(List<Joker> jokers = null)
         {
-            if (currentSession)
+            if (_currentSession)
             {
-                jokers = currentSession.GetJokers();
-                currentSession.End();
+                jokers = _currentSession.GetJokers();
+                _currentSession.End();
             }
 
             Session newSession = new GameObject("Session").AddComponent<Session>();
@@ -89,32 +93,8 @@ namespace KillingJoke.Core
             throw new NotImplementedException();
         }
 
-        private void OnThumbsUpAction()
-        {
-            if (state != GameState.Execute)
-                return;
-            currentSession.ForgiveJoker(activeJoker);
-            //state = GameState.None;
-        }
-
-        private void OnThumbsDownAction()
-        {
-            if (state != GameState.Execute)
-                return;
-
-            currentSession.KillJoker(activeJoker);
-            //state = GameState.None;
-        }
-
-        void Update()
-        {
-
-        }
-
         private void OnDestroy()
         {
-            thumbsUps.ForEach(u => u.WhenSelected.RemoveListener(OnThumbsUpAction));
-            thumbsDowns.ForEach(u => u.WhenSelected.RemoveListener(OnThumbsDownAction));
 
             hmdRaycaster.OnNewHighlight.RemoveListener(SetActiveJoker);
         }
