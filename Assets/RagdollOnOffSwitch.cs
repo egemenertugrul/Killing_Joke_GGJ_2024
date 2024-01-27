@@ -39,6 +39,7 @@ public class RagdollOnOffSwitch : MonoBehaviour
         {
             col.enabled = true;
         }
+        OnRagdoll.Invoke();
 
         
     }
