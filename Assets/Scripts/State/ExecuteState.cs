@@ -5,6 +5,12 @@ namespace KillingJoke.Core
 {
     public class ExecuteState : GameStates
     {
+        private float _time_to_forgive = 1f;
+        private Coroutine _coroutineForgive;
+        private Coroutine _coroutineKill;
+        private float _time_to_kill = 1f;
+        private bool _canPlay = false;
+
         public override void CheckSwitchStates()
         {
             if (Input.GetMouseButtonDown(0))
@@ -22,7 +28,6 @@ namespace KillingJoke.Core
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 _sm.StopTellDefault();
-                //_sm.StartTell();
             }
 
         }
@@ -31,11 +36,14 @@ namespace KillingJoke.Core
         {
             _sm.ThumbsUps.ForEach(u =>
             {
-                u.WhenSelected.RemoveListener(_sm.Forgive);
+                u.WhenSelected.RemoveListener(StartForgive);
+                u.WhenUnselected.AddListener(StopForgivingAction);
+
             });
             _sm.ThumbsDowns.ForEach(u =>
             {
-                u.WhenSelected.RemoveListener(_sm.Kill);
+                u.WhenSelected.RemoveListener(StartKill);
+                u.WhenSelected.RemoveListener(StopKillingAction);
             });
             //_sm.PalmUps.ForEach(u => {
             //    u.WhenSelected.RemoveListener(_sm.StartTell);
@@ -47,15 +55,52 @@ namespace KillingJoke.Core
             _sm.PalmUpRight.WhenSelected.RemoveListener(_sm.StartListen);
         }
 
+
+        public void StartForgive()
+        {
+            _coroutineForgive = StartCoroutine(ForgiveTimer());
+        }
+        public void StartKill()
+        {
+            _coroutineKill = StartCoroutine(KillTimer());
+        }
+        IEnumerator ForgiveTimer()
+        {
+            yield return new WaitForSeconds(_time_to_forgive);
+        }
+        IEnumerator KillTimer()
+        {
+            yield return new WaitForSeconds(_time_to_kill);
+        }
+        public void StopForgivingAction()
+        {
+            if (_coroutineForgive != null)
+            {
+                StopCoroutine(_coroutineForgive);
+            }
+        }
+        public void StopKillingAction()
+        {
+            if (_coroutineKill != null)
+            {
+                StopCoroutine(_coroutineKill);
+            }
+
+        }
+
+
         public override void EnterState()
         {
             _sm.ThumbsUps.ForEach(u =>
             {
-                u.WhenSelected.AddListener(_sm.Forgive);
+                u.WhenSelected.AddListener(StartForgive);
+                u.WhenUnselected.AddListener(StopForgivingAction);
             });
             _sm.ThumbsDowns.ForEach(u =>
             {
-                u.WhenSelected.AddListener(_sm.Kill);
+                u.WhenSelected.AddListener(StartKill);
+                u.WhenUnselected.AddListener(StopKillingAction);
+
             });
             //_sm.PalmUps.ForEach(u => { 
             //    u.WhenSelected.AddListener(_sm.StartTell);
@@ -63,7 +108,6 @@ namespace KillingJoke.Core
             //});
             _sm.PalmUpLeft.WhenSelected.AddListener(_sm.StartTell);
             _sm.PalmUpLeft.WhenUnselected.AddListener(_sm.StopTell);
-
             _sm.PalmUpRight.WhenSelected.AddListener(_sm.StartListen);
         }
 
