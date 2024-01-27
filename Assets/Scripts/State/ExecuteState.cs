@@ -14,37 +14,43 @@ namespace KillingJoke.Core
             else if (Input.GetMouseButtonDown(1))
             {
                 _sm.Forgive();
+            } else if(Input.GetMouseButtonDown(2))
+            {
+                _sm.Listen();
             }
-            var newState = new IdleState(_sm);
-            SwitchState(newState);
+            //var newState = new IdleState(_sm);
+            //SwitchState(newState);
         }
 
-        private void OnExecute()
-        {
-            _sm.ThumbsUps.ForEach(u =>
-            {
-                u.WhenSelected.RemoveListener(_sm.Forgive);
-                u.WhenSelected.RemoveListener(OnExecute);
-            });
-            _sm.ThumbsDowns.ForEach(u =>
-            {
-                u.WhenSelected.RemoveListener(_sm.Kill);
-                u.WhenSelected.RemoveListener(OnExecute);
-            });
-            var newState = new IdleState(_sm);
-            SwitchState(newState);
-        }
+        //private void OnExecute()
+        //{
+        //    _sm.ThumbsUps.ForEach(u =>
+        //    {
+        //        u.WhenSelected.RemoveListener(_sm.Forgive);
+        //        //u.WhenSelected.RemoveListener(OnExecute);
+        //    });
+        //    _sm.ThumbsDowns.ForEach(u =>
+        //    {
+        //        u.WhenSelected.RemoveListener(_sm.Kill);
+        //        //u.WhenSelected.RemoveListener(OnExecute);
+        //    });
+        //    var newState = new IdleState(_sm);
+        //    SwitchState(newState);
+        //}
         public override void EnterState()
         {
             _sm.ThumbsUps.ForEach(u =>
             {
                 u.WhenSelected.AddListener(_sm.Forgive);
-                u.WhenSelected.AddListener(OnExecute);
+                //u.WhenSelected.AddListener(OnExecute);
             });
             _sm.ThumbsDowns.ForEach(u =>
             {
                 u.WhenSelected.AddListener(_sm.Kill);
-                u.WhenSelected.AddListener(OnExecute);
+                //u.WhenSelected.AddListener(OnExecute);
+            });
+            _sm.PalmUps.ForEach(u => { 
+                u.WhenSelected.AddListener(_sm.Listen);
             });
         }
 

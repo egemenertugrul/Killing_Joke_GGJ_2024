@@ -12,24 +12,13 @@ namespace KillingJoke.Core
 
     public class GameManager : MonoBehaviour
     {
-        enum GameState
-        {
-            None,
-            Menu,
-            Speak,
-            Listen,
-            Execute
-        }
-
-        
         [SerializeField] HmdRaycaster hmdRaycaster;
         [SerializeField] DictationActivation _dictation_activation;
             
         [SerializeField] private JokerFactory jokerFactory;
         [Range(1, 10)][SerializeField] private int jokerCount;
 
-        GameState state = GameState.Execute;
-        private StateMachine _stateMachine;
+        [SerializeField] private StateMachine _stateMachine;
         private Joker _activeJoker;
 
         private Session _currentSession;
@@ -43,27 +32,40 @@ namespace KillingJoke.Core
         }
         void Start()
         {
-
             _stateMachine.Init(this);
             hmdRaycaster.OnNewHighlight.AddListener(SetActiveJoker);
 
-            _currentSession = StartNewSession();
+            StartCoroutine(StartSessionDelayed());
             
         }
+
+        IEnumerator StartSessionDelayed()
+        {
+            yield return new WaitForSeconds(1);
+
+            _currentSession = StartNewSession();
+        }
+
         private void SetActiveJoker(IHMDHighlightable highlighted)
         {
             Joker highlightedJoker = (Joker)highlighted;
-            if (highlightedJoker.IsAlive)
-                _activeJoker = highlightedJoker;
+            if(highlightedJoker != null )
+            {
+                if (highlightedJoker.IsAlive)
+                    _activeJoker = highlightedJoker;
+            } else
+            {
+                _activeJoker = null;
+            }
         }
 
         private Session StartNewSession(List<Joker> jokers = null)
         {
-            if (_currentSession)
-            {
-                jokers = _currentSession.GetJokers();
-                _currentSession.End();
-            }
+            //Session prevSession = null;
+            //if (_currentSession)
+            //{
+            //    Destroy(_currentSession.gameObject);
+            //}
 
             Session newSession = new GameObject("Session").AddComponent<Session>();
             newSession.transform.SetParent(transform);
@@ -76,11 +78,14 @@ namespace KillingJoke.Core
             {
                 if (aliveJokers.Count == 0)
                 {
+                    Debug.Log($"All jokers are dead, end the game.");
                     EndGame();
                 }
                 else
                 {
-                    StartNewSession(jokers);
+                    Debug.Log($"End of session with {aliveJokers.Count} jokers alive.");
+                    _currentSession = StartNewSession(aliveJokers);
+                    _stateMachine.CurrentState.SwitchState(new IdleState(_stateMachine)); // Go to idle
                 }
             });
 

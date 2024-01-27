@@ -183,9 +183,37 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.size
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.data[32].pitch
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.data[32].speed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.data[32].style
+      value: default
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.data[32].voice
+      value: Cael
+      objectReference: {fileID: 0}
+    - target: {fileID: 5768388400182586589, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: _presetVoiceSettings.Array.data[32].SettingsId
+      value: CAEL
+      objectReference: {fileID: 0}
     - target: {fileID: 6696264575898597010, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
       propertyPath: m_Name
       value: WorkingChatGPTLogicHeader
+      objectReference: {fileID: 0}
+    - target: {fileID: 7717372164673803313, guid: 3bd955bf0b8f5d2449c6b26b674fdb4a, type: 3}
+      propertyPath: presetVoiceID
+      value: WIT$PIRATE
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

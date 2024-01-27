@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Oculus.Interaction;
+using System;
 namespace KillingJoke.Core
 {
 
@@ -11,7 +12,8 @@ namespace KillingJoke.Core
         private GameManager _gameManager;
         [SerializeField] SelectorUnityEventWrapper thumbsUpLeft, thumbsUpRight;
         [SerializeField] SelectorUnityEventWrapper thumbsDownLeft, thumbsDownRight;
-        List<SelectorUnityEventWrapper> thumbsUps, thumbsDowns;
+        [SerializeField] SelectorUnityEventWrapper palmUpLeft, palmUpRight;
+        List<SelectorUnityEventWrapper> thumbsUps, thumbsDowns, palmUps;
         public List<SelectorUnityEventWrapper> ThumbsUps
         {
             get => thumbsUps;
@@ -20,6 +22,10 @@ namespace KillingJoke.Core
         {
             get => thumbsDowns;
         }
+        public List<SelectorUnityEventWrapper> PalmUps
+        {
+            get => palmUps;
+        }
         public GameStates CurrentState
         {
             get => _currentState;
@@ -27,9 +33,12 @@ namespace KillingJoke.Core
         }
         public void Init(GameManager gameManager)
         {
+            _gameManager = gameManager;
             _currentState = new IdleState(this);
+
             thumbsUps = new List<SelectorUnityEventWrapper> { thumbsUpLeft, thumbsUpRight };
             thumbsDowns = new List<SelectorUnityEventWrapper> { thumbsDownLeft, thumbsDownRight };
+            palmUps = new List<SelectorUnityEventWrapper> { palmUpLeft, palmUpRight };
         }
 
         private void Update()
@@ -41,9 +50,15 @@ namespace KillingJoke.Core
         {
             _gameManager.CurrentSession.ForgiveJoker(_gameManager.ActiveJoker);
         }
+
         public void Kill()
         {
             _gameManager.CurrentSession.KillJoker(_gameManager.ActiveJoker);
+        }
+
+        public void Listen()
+        {
+            _gameManager.CurrentSession.ListenJoker(_gameManager.ActiveJoker);
         }
     }
 }

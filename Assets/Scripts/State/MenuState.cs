@@ -7,17 +7,18 @@ namespace KillingJoke.Core
     {
         public override void CheckSwitchStates()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void EnterState()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Entered Menu state.");
         }
 
         public override void UpdateState()
         {
-            throw new System.NotImplementedException();
+            CheckSwitchStates();
+            //throw new System.NotImplementedException();
         }
         public MenuState(StateMachine stateMachine) : base(stateMachine)
         {

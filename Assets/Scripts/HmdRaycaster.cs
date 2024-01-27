@@ -48,7 +48,10 @@ namespace KillingJoke.Core
                 }
             }
             if(hits.Length == 0)
+            {
                 LastHighlighted?.Unhighlight();
+                LastHighlighted = null;
+            }
         }
     }
 }

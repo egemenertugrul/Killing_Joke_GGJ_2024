@@ -14,7 +14,7 @@ namespace KillingJoke.Core
 
         public override void EnterState()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Entered Listen state.");
         }
 
         public override void UpdateState()

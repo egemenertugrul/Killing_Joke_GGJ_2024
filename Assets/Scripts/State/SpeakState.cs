@@ -9,14 +9,15 @@ namespace KillingJoke.Core
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                var newState = new ListenState(_sm);
+                //var newState = new ListenState(_sm);
+                var newState = new ExecuteState(_sm);
                 SwitchState(newState);
             }
         }
 
         public override void EnterState()
         {
-            throw new System.NotImplementedException();
+            Debug.Log("Entered Speak state.");
         }
 
         public override void UpdateState()

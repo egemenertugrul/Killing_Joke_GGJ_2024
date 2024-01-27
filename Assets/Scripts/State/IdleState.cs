@@ -16,7 +16,7 @@ namespace KillingJoke.Core
 
         public override void EnterState()
         {
-            return;
+            Debug.Log("Entered Idle state.");
         }
 
         public override void UpdateState()

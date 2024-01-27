@@ -1,10 +1,21 @@
-﻿using UnityEngine;
+﻿using Meta.WitAi;
+using Meta.WitAi.TTS.Data;
+using Meta.WitAi.TTS.Integrations;
+using Meta.WitAi.TTS.Utilities;
+using UnityEngine;
 
 namespace KillingJoke.Core
 {
-    public class Joker : BaseEntity<Joker.Attributes>, IHMDHighlightable
+    public partial class Joker : BaseEntity<Joker.Attributes>, IHMDHighlightable
     {
+
         private Outline outline;
+        private bool isAlive = true;
+        private TTSWitVoiceSettings voiceSetting;
+        private Attributes attributes;
+        public bool IsAlive { get => isAlive; }
+
+        private string _jokePhrase = "";
 
         private void Awake()
         {
@@ -12,15 +23,29 @@ namespace KillingJoke.Core
             outline.OutlineWidth = 0;
         }
 
-        public override void Initialize(Attributes attributes)
+        private void ResetHighlight()
         {
-            this.attributes = attributes;
+            outline.OutlineColor = Color.white;
         }
 
-        private bool isAlive = true;
-        private Attributes attributes;
+        public void AssignNewJoke(string joke)
+        {
+            _jokePhrase = joke;
+            ResetHighlight();
+        }
 
-        public bool IsAlive { get => isAlive; }
+        public override void Initialize(Attributes attributes)
+        {
+            //this.tts = tts;
+            this.attributes = attributes;
+            SelectRandomVoiceSetting();
+        }
+
+        private void SelectRandomVoiceSetting()
+        {
+            int randomIndex = Random.Range(0, TTSManager.Instance.Presets.Length);
+            voiceSetting = TTSManager.Instance.Presets[randomIndex];
+        }
 
         public void Forgive()
         {
@@ -35,28 +60,29 @@ namespace KillingJoke.Core
             Debug.Log($"Killed Joker {attributes.ID}");
             isAlive = false;
 
+            if (TTSManager.Instance.LastSpokeEntityID == attributes.ID)
+                TTSManager.Instance.StopSpeaking();
+
             outline.OutlineColor = Color.red;
 
             // TODO: Dummy
             //Destroy(GetComponentInChildren<MeshRenderer>());
         }
 
-        public class Attributes : BaseAttributes
+        public void Speak()
         {
-            public static int Count = 0;
-            public int ID;
-            public Color color;
-
-            public Attributes(int id, Color color)
+            if (!isAlive)
             {
-                this.ID = id;
-                this.color = color;
+                Debug.Log($"Joker {attributes.ID} is dead. What a joke.");
+                return;
             }
 
-            public static Attributes GetRandomAttributes()
-            {
-                return new Attributes(Count++, Random.ColorHSV(0, 1, 1, 1));
-            }
+            Debug.Log($"Joker {attributes.ID} is speaking: {_jokePhrase}");
+
+            TTSManager.Instance.Speak(voiceSetting, _jokePhrase, attributes.ID, transform);
+            //TTSWitVoiceSettings voiceSettings;
+            //voiceSettings = TTSWit.PresetWitVoiceSettings[1]
+            
         }
 
         public void Highlight()

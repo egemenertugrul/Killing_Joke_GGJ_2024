@@ -8,16 +8,25 @@ namespace KillingJoke.Core
 {
     public class Session : MonoBehaviour
     {
-        public UnityEvent<List<Joker>> OnEnd = new UnityEvent<List<Joker>>();
+        public UnityEvent<List<Joker>> OnEnd;
         private int jokersCount;
         private List<Joker> jokers;
-        private List<Joker> forgivenJokers = new List<Joker>(), killedJokers = new List<Joker>();
+        private List<Joker> forgivenJokers, killedJokers;
+
+        private void Initialize()
+        {
+            OnEnd = new UnityEvent<List<Joker>>();
+            forgivenJokers = new List<Joker>();
+            killedJokers = new List<Joker>();
+        }
 
         /// <summary>
         /// Generate a session from scratch.
         /// </summary>
         /// <param name="jokerCount"></param>
         public void Initialize(JokerFactory jokerFactory, int jokerCount) {
+            Initialize();
+
             jokers = new List<Joker>();
             float width = 1;
             for (int i = 0; i < jokerCount; i++)
@@ -28,6 +37,8 @@ namespace KillingJoke.Core
                 joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, 5);
             }
             this.jokersCount = jokerCount;
+
+            Begin();
         }
 
         /// <summary>
@@ -35,18 +46,23 @@ namespace KillingJoke.Core
         /// </summary>
         /// <param name="jokers">Preferably forgivenJokers.</param>
         public void Initialize(List<Joker> jokers) {
+            Initialize();
+
             if (jokers == null)
                 throw new System.Exception("List of jokers is null!");
 
             this.jokers = jokers;
             this.jokersCount = jokers.Count;
+            
+            Begin();
         }
 
         public void Begin()
         {
             for (int i = 0; i < jokers.Count; i++)
             {
-                //currentJokers.Enter(new Vector3());
+                var joker = jokers[i];
+                joker.AssignNewJoke("Hi, this is a joke!");
             }
         }
 
@@ -59,6 +75,8 @@ namespace KillingJoke.Core
 
         public void ForgiveJoker(Joker joker)
         {
+            if (joker == null)
+                return;
             if (forgivenJokers.Contains(joker) || killedJokers.Contains(joker))
                 return;
             jokers.Remove(joker);
@@ -70,6 +88,8 @@ namespace KillingJoke.Core
 
         public void KillJoker(Joker joker)
         {
+            if (joker == null)
+                return;
             if (forgivenJokers.Contains(joker) || killedJokers.Contains(joker))
                 return;
             jokers.Remove(joker);
@@ -79,14 +99,16 @@ namespace KillingJoke.Core
             CheckEndState();
         }
 
+        public void ListenJoker(Joker joker)
+        {
+            if (joker == null)
+                return;
+            joker.Speak();
+        }
+
         public void End()
         {
             OnEnd.Invoke(forgivenJokers);
-        }
-
-        public List<Joker> GetJokers()
-        {
-            return jokers;
         }
 
         private void DestroySelf(float delay = 0)

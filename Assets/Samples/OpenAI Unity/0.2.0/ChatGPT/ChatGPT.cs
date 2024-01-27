@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using TMPro;
 using Meta.WitAi.Dictation;
 using Meta.WitAi.TTS.Utilities;
+using KillingJoke.Core.Utils;
 
 namespace OpenAI
 {
-    public class ChatGPT : MonoBehaviour
+    public class ChatGPT : Singleton<ChatGPT>
     {
         [SerializeField] private TextMeshProUGUI _voiceText;
         [SerializeField] private MultiRequestTranscription _multiRequestTranscription;
