@@ -7,17 +7,19 @@ namespace KillingJoke.Core
     {
         public override void CheckSwitchStates()
         {
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-                //var newState = new ListenState(_sm);
-                var newState = new ExecuteState(_sm);
-                SwitchState(newState);
-            }
+            //if (Input.GetKeyDown(KeyCode.S))
+            //{
+            //    //var newState = new ListenState(_sm);
+            //    var newState = new ExecuteState(_sm);
+            //    SwitchState(newState);
+            //}
         }
 
         public override void EnterState()
         {
             Debug.Log("Entered Speak state.");
+            var newState = new ExecuteState(_sm);
+            SwitchState(newState);
         }
 
         public override void UpdateState()

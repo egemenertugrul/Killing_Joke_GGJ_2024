@@ -31,6 +31,9 @@ namespace KillingJoke.Core
             get => _currentState;
             set => _currentState = value;
         }
+        public SelectorUnityEventWrapper PalmUpRight { get => palmUpRight; set => palmUpRight = value; }
+        public SelectorUnityEventWrapper PalmUpLeft { get => palmUpLeft; set => palmUpLeft = value; }
+
         public void Init(GameManager gameManager)
         {
             _gameManager = gameManager;
@@ -65,8 +68,19 @@ namespace KillingJoke.Core
         {
             _gameManager.StopListenPlayer((voiceInput) =>
             {
-                _gameManager.CurrentSession.TellAndListenJoker(_gameManager.ActiveJoker, voiceInput);
+                //_gameManager.CurrentSession.TellAndListenJoker(_gameManager.ActiveJoker, voiceInput);
+                if(voiceInput.Length > 0)
+                    _gameManager.CurrentSession.SetReplies(voiceInput);
             });
+        }
+        public void StopTellDefault()
+        {
+            _gameManager.CurrentSession.SetReplies("Tell me a joke");
+        }
+
+        internal void StartListen()
+        {
+            _gameManager.CurrentSession.ListenJoker(_gameManager.ActiveJoker);
         }
     }
 }

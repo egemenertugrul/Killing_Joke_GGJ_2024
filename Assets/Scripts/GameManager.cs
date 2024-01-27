@@ -38,7 +38,13 @@ namespace KillingJoke.Core
             hmdRaycaster.OnNewHighlight.AddListener(SetActiveJoker);
 
             StartCoroutine(StartSessionDelayed());
-            
+            StartCoroutine(GoToExecuteState());
+        }
+
+        IEnumerator GoToExecuteState()
+        {
+            yield return new WaitForSeconds(2);
+            _stateMachine.CurrentState.SwitchState(new ExecuteState(_stateMachine));
         }
 
         IEnumerator StartSessionDelayed()
@@ -88,6 +94,8 @@ namespace KillingJoke.Core
                     Debug.Log($"End of session with {aliveJokers.Count} jokers alive.");
                     _currentSession = StartNewSession(aliveJokers);
                     _stateMachine.CurrentState.SwitchState(new IdleState(_stateMachine)); // Go to idle
+                    
+                    StartCoroutine(GoToExecuteState());
                 }
             });
 
@@ -107,17 +115,19 @@ namespace KillingJoke.Core
 
         public void StartListenPlayer()
         {
+            _dictation_activation.OnFullTranscription.RemoveAllListeners();
+
             Debug.Log("Started listening to player..");
             _dictation_activation.IsActive = true;
         }
 
-
         public void StopListenPlayer(UnityAction<string> voiceInputCallback)
         {
-            Debug.Log($"Stopped listening to player.. Heard: {_dictation_activation.TranscribedText}");
+            Debug.Log($"Stopped listening to player.. Waiting for result..");
+            _dictation_activation.OnFullTranscription.AddListener(voiceInputCallback);
             //_dictation_activation.OnDictationStopped.AddListener(voiceInputCallback);
             _dictation_activation.IsActive = false;
-            voiceInputCallback?.Invoke(_dictation_activation.TranscribedText);
+            //voiceInputCallback?.Invoke(_dictation_activation.TranscribedText);
             //_dictation_activation.OnDictationStopped.RemoveListener(voiceInputCallback);
         }
     }

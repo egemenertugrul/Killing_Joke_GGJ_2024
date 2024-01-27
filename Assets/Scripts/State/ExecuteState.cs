@@ -14,12 +14,16 @@ namespace KillingJoke.Core
             else if (Input.GetMouseButtonDown(1))
             {
                 _sm.Forgive();
-            } else if(Input.GetMouseButtonDown(2))
-            {
-                _sm.StartTell();
             }
-            //var newState = new IdleState(_sm);
-            //SwitchState(newState);
+            else if (Input.GetMouseButtonDown(2))
+            {
+                _sm.StartListen();
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _sm.StopTellDefault();
+            }
+
         }
 
         protected override void ExitState()
@@ -32,10 +36,14 @@ namespace KillingJoke.Core
             {
                 u.WhenSelected.RemoveListener(_sm.Kill);
             });
-            _sm.PalmUps.ForEach(u => {
-                u.WhenSelected.RemoveListener(_sm.StartTell);
-                u.WhenUnselected.RemoveListener(_sm.StopTell);
-            });
+            //_sm.PalmUps.ForEach(u => {
+            //    u.WhenSelected.RemoveListener(_sm.StartTell);
+            //    u.WhenUnselected.RemoveListener(_sm.StopTell);
+            //});
+            _sm.PalmUpLeft.WhenSelected.RemoveListener(_sm.StartTell);
+            _sm.PalmUpLeft.WhenUnselected.RemoveListener(_sm.StopTell);
+
+            _sm.PalmUpRight.WhenSelected.RemoveListener(_sm.StartListen);
         }
 
         public override void EnterState()
@@ -48,10 +56,14 @@ namespace KillingJoke.Core
             {
                 u.WhenSelected.AddListener(_sm.Kill);
             });
-            _sm.PalmUps.ForEach(u => { 
-                u.WhenSelected.AddListener(_sm.StartTell);
-                u.WhenUnselected.AddListener(_sm.StopTell);
-            });
+            //_sm.PalmUps.ForEach(u => { 
+            //    u.WhenSelected.AddListener(_sm.StartTell);
+            //    u.WhenUnselected.AddListener(_sm.StopTell);
+            //});
+            _sm.PalmUpLeft.WhenSelected.AddListener(_sm.StartTell);
+            _sm.PalmUpLeft.WhenUnselected.AddListener(_sm.StopTell);
+
+            _sm.PalmUpRight.WhenSelected.AddListener(_sm.StartListen);
         }
 
         public override void UpdateState()

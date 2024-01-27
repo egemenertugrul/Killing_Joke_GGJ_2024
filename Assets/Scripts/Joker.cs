@@ -70,7 +70,7 @@ namespace KillingJoke.Core
             //Destroy(GetComponentInChildren<MeshRenderer>());
         }
 
-        public void Speak(string voiceInput = "")
+        public void Speak()
         {
             if (!isAlive)
             {
@@ -78,14 +78,8 @@ namespace KillingJoke.Core
                 return;
             }
 
-            ChatGPT.Instance.GetReply(voiceInput, attributes,
-                (reply) =>
-                {
-                    reply = reply.Trim().Normalize();
-                    Debug.Log($"Joker {attributes.ID} is speaking: {reply}");
-                    TTSManager.Instance.Speak(voiceSetting, reply, attributes.ID, transform);
-                }
-            );
+            Debug.Log($"Joker {attributes.ID} is speaking: {_speakPhrase}");
+            TTSManager.Instance.Speak(voiceSetting, _speakPhrase, attributes.ID, transform);
         }
 
         public void Highlight()

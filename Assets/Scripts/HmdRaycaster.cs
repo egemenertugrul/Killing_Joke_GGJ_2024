@@ -35,7 +35,7 @@ namespace KillingJoke.Core
         void FixedUpdate()
         {
             Ray ray = new Ray(transform.position, transform.forward);
-            hits = Physics.RaycastAll(ray, MaxDistance, ~0);
+            hits = Physics.SphereCastAll(ray, 0.5f, MaxDistance, ~0);
             Debug.DrawRay(ray.origin, ray.direction, Color.red);
             for (int i = 0; i < hits.Length; i++)
             {
@@ -46,6 +46,7 @@ namespace KillingJoke.Core
                     highlightable.Highlight();
                     LastHighlighted = highlightable;
                 }
+                break;
             }
             if(hits.Length == 0)
             {
