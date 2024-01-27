@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class RagdollOnOffSwitch : MonoBehaviour
 {
@@ -9,12 +10,13 @@ public class RagdollOnOffSwitch : MonoBehaviour
     private Rigidbody _mainRb;
     private Rigidbody[] _rigibodyList;
     private Collider[] _colList;
-
+    private Animator _animator;
+    public UnityEvent OnRagdoll;
     public void Start()
     {
         _mainCol = gameObject.GetComponent<Collider>();
         _mainRb = gameObject.GetComponent<Rigidbody>();
-
+        _animator = gameObject.GetComponent<Animator>();
         GetRagdollParts();
         RagdollOff();
     }
@@ -28,6 +30,7 @@ public class RagdollOnOffSwitch : MonoBehaviour
     {
         _mainCol.enabled = false;
         _mainRb.isKinematic = true;
+        _animator.enabled = false;
         foreach (Rigidbody rb in _rigibodyList)
         {
             rb.isKinematic = false;
@@ -36,11 +39,14 @@ public class RagdollOnOffSwitch : MonoBehaviour
         {
             col.enabled = true;
         }
+
+        
     }
     public void RagdollOff()
     {
         _mainCol.enabled = true;
         _mainRb.isKinematic = false;
+        _animator.enabled = true;
         foreach (Rigidbody rb in _rigibodyList)
         {
             rb.isKinematic = true;

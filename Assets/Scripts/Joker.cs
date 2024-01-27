@@ -19,11 +19,23 @@ namespace KillingJoke.Core
 
         private string _speakPhrase = "";
         [SerializeField] private TextMeshProUGUI subtitleText;
-
+        private RagdollOnOffSwitch _ragdoll_switch;
         private void Awake()
         {
         }
-
+        void Start()
+        {
+            if(gameObject.TryGetComponent<RagdollOnOffSwitch>(out _ragdoll_switch))
+            {
+                _ragdoll_switch.OnRagdoll.AddListener(OnRagDollAction);
+            }
+        }
+        private void OnRagDollAction()
+        {
+            isAlive = false;
+            Destroy(_ragdoll_switch);
+            Kill();
+        }
         private void ResetHighlight()
         {
             outline.OutlineColor = Color.white;
