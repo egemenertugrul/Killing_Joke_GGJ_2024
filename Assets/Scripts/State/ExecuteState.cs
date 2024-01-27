@@ -5,41 +5,17 @@ namespace KillingJoke.Core
 {
     public class ExecuteState : GameStates
     {
-        private float _time_to_forgive = 1f;
-        private Coroutine _coroutineForgive;
-        private Coroutine _coroutineKill;
-        private float _time_to_kill = 1f;
-        private bool _canPlay = false;
 
-        //public override void CheckSwitchStates()
-        //{
-        //    if (Input.GetMouseButtonDown(0))
-        //    {
-        //        _sm.Kill();
-        //    }
-        //    else if (Input.GetMouseButtonDown(1))
-        //    {
-        //        _sm.Forgive();
-        //    }
-        //    else if (Input.GetMouseButtonDown(2))
-        //    {
-        //        _sm.StartListen();
-        //    }
-        //    else if (Input.GetKeyDown(KeyCode.Space))
-        //    {
-        //        _sm.StopTellDefault();
-        //    }
 
-        //}
         public override void CheckSwitchStates()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                StartKill();
+                _sm.Kill();
             }
             else if (Input.GetMouseButtonDown(1))
             {
-                StartForgive();
+                _sm.Forgive();
             }
             else if (Input.GetMouseButtonDown(2))
             {
@@ -49,29 +25,22 @@ namespace KillingJoke.Core
             {
                 _sm.StopTellDefault();
             }
-            else if (Input.GetKeyDown(KeyCode.B))
-            {
-                StopKillingAction();
-            }
-            else if (Input.GetKeyDown(KeyCode.N))
-            {
-                StopForgivingAction();
-            }
 
         }
+
 
         protected override void ExitState()
         {
             _sm.ThumbsUps.ForEach(u =>
             {
-                u.WhenSelected.RemoveListener(StartForgive);
-                u.WhenUnselected.AddListener(StopForgivingAction);
+                u.WhenSelected.RemoveListener(_sm.StartForgive);
+                u.WhenUnselected.AddListener(_sm.StopForgivingAction);
 
             });
             _sm.ThumbsDowns.ForEach(u =>
             {
-                u.WhenSelected.RemoveListener(StartKill);
-                u.WhenSelected.RemoveListener(StopKillingAction);
+                u.WhenSelected.RemoveListener(_sm.StartKill);
+                u.WhenSelected.RemoveListener(_sm.StopKillingAction);
             });
             //_sm.PalmUps.ForEach(u => {
             //    u.WhenSelected.RemoveListener(_sm.StartTell);
@@ -83,54 +52,20 @@ namespace KillingJoke.Core
             _sm.PalmUpRight.WhenSelected.RemoveListener(_sm.StartListen);
         }
 
-
-        public void StartForgive()
-        {
-            _coroutineForgive = StartCoroutine(ForgiveTimer());
-        }
-        public void StartKill()
-        {
-            _coroutineKill = StartCoroutine(KillTimer());
-        }
-        IEnumerator ForgiveTimer()
-        {
-            yield return new WaitForSeconds(_time_to_forgive);
-            _sm.Forgive();
-        }
-        IEnumerator KillTimer()
-        {
-            yield return new WaitForSeconds(_time_to_kill);
-            _sm.Kill();
-
-        }
-        public void StopForgivingAction()
-        {
-            if (_coroutineForgive != null)
-            {
-                StopCoroutine(_coroutineForgive);
-            }
-        }
-        public void StopKillingAction()
-        {
-            if (_coroutineKill != null)
-            {
-                StopCoroutine(_coroutineKill);
-            }
-
-        }
+        
 
 
         public override void EnterState()
         {
             _sm.ThumbsUps.ForEach(u =>
             {
-                u.WhenSelected.AddListener(StartForgive);
-                u.WhenUnselected.AddListener(StopForgivingAction);
+                u.WhenSelected.AddListener(_sm.StartForgive);
+                u.WhenUnselected.AddListener(_sm.StopForgivingAction);
             });
             _sm.ThumbsDowns.ForEach(u =>
             {
-                u.WhenSelected.AddListener(StartKill);
-                u.WhenUnselected.AddListener(StopKillingAction);
+                u.WhenSelected.AddListener(_sm.StartKill);
+                u.WhenUnselected.AddListener(_sm.StopKillingAction);
 
             });
             //_sm.PalmUps.ForEach(u => { 
