@@ -2,6 +2,7 @@
 using Meta.WitAi.TTS.Data;
 using Meta.WitAi.TTS.Integrations;
 using Meta.WitAi.TTS.Utilities;
+using OpenAI;
 using UnityEngine;
 
 namespace KillingJoke.Core
@@ -15,7 +16,7 @@ namespace KillingJoke.Core
         private Attributes attributes;
         public bool IsAlive { get => isAlive; }
 
-        private string _jokePhrase = "";
+        private string _speakPhrase = "";
 
         private void Awake()
         {
@@ -28,9 +29,9 @@ namespace KillingJoke.Core
             outline.OutlineColor = Color.white;
         }
 
-        public void AssignNewJoke(string joke)
+        public void AssignNewSpeakPhrase(string joke)
         {
-            _jokePhrase = joke;
+            _speakPhrase = joke;
             ResetHighlight();
         }
 
@@ -69,7 +70,7 @@ namespace KillingJoke.Core
             //Destroy(GetComponentInChildren<MeshRenderer>());
         }
 
-        public void Speak()
+        public void Speak(string voiceInput = "")
         {
             if (!isAlive)
             {
@@ -77,12 +78,14 @@ namespace KillingJoke.Core
                 return;
             }
 
-            Debug.Log($"Joker {attributes.ID} is speaking: {_jokePhrase}");
-
-            TTSManager.Instance.Speak(voiceSetting, _jokePhrase, attributes.ID, transform);
-            //TTSWitVoiceSettings voiceSettings;
-            //voiceSettings = TTSWit.PresetWitVoiceSettings[1]
-            
+            ChatGPT.Instance.GetReply(voiceInput, attributes,
+                (reply) =>
+                {
+                    reply = reply.Trim().Normalize();
+                    Debug.Log($"Joker {attributes.ID} is speaking: {reply}");
+                    TTSManager.Instance.Speak(voiceSetting, reply, attributes.ID, transform);
+                }
+            );
         }
 
         public void Highlight()

@@ -7,7 +7,10 @@
  */
 
 using Meta.WitAi.Dictation;
+using System;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 namespace Meta.Voice.Samples.Dictation
@@ -16,17 +19,56 @@ namespace Meta.Voice.Samples.Dictation
     {
         [FormerlySerializedAs("dictation")]
         [SerializeField] private DictationService _dictation;
+        private string _transcribedText;
 
-        public void ToggleActivation()
+        public UnityEvent<string> OnDictationStopped = new UnityEvent<string>();
+
+        public bool IsActive
         {
-            if (_dictation.MicActive)
+            get
             {
-                _dictation.Deactivate();
+                return _dictation.MicActive;
             }
-            else
+            set
             {
-                _dictation.Activate();
+                if (!value)
+                {
+                    //OnDictationStopped.Invoke(TranscribedText);
+                    //TranscribedText = "";
+                    _dictation.Deactivate();
+                }
+                else
+                {
+                    TranscribedText = "";
+                    _dictation.Activate();
+                }
             }
         }
+
+        public string TranscribedText { get => _transcribedText.Split('\n').Last(); set => _transcribedText = value; }
+
+        private void Awake()
+        {
+            _dictation.DictationEvents.OnAborting.AddListener(() =>
+            {
+                OnDictationStopped.Invoke(TranscribedText);
+            });
+        }
+
+        //public void ToggleActivation()
+        //{
+        //    if (_dictation.MicActive)
+        //    {
+        //        _dictation.Deactivate();
+        //    }
+        //    else
+        //    {
+        //        _dictation.Activate();
+        //    }
+
+        //    //_dictation.DictationEvents.OnPartialTranscription.AddListener(OnTranscriptionResponse);
+        //    //_dictation.DictationEvents.OnFullTranscription.AddListener(OnTranscriptionResponse);
+        //    //_dictation.DictationEvents.OnAborted.AddListener(() => { IsActive = false;  });
+        //}
     }
 }

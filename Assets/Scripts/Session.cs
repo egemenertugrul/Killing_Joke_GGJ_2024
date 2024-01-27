@@ -34,7 +34,8 @@ namespace KillingJoke.Core
                 Joker joker = jokerFactory.Generate(attributes: Joker.Attributes.GetRandomAttributes());
                 jokers.Add(joker);
 
-                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, 5);
+                var zOffset = 5 + 0.75f * Mathf.Sin((Mathf.PI / (jokerCount - 1)) * i);
+                joker.transform.localPosition = new Vector3(i * width - (jokerCount / 2) * width, 0, zOffset);
             }
             this.jokersCount = jokerCount;
 
@@ -59,11 +60,11 @@ namespace KillingJoke.Core
 
         public void Begin()
         {
-            for (int i = 0; i < jokers.Count; i++)
-            {
-                var joker = jokers[i];
-                joker.AssignNewJoke("Hi, this is a joke!");
-            }
+            //for (int i = 0; i < jokers.Count; i++)
+            //{
+            //    var joker = jokers[i];
+            //    joker.AssignNewSpeakPhrase("Hi, this is a joke!");
+            //}
         }
 
         private void CheckEndState()
@@ -99,11 +100,11 @@ namespace KillingJoke.Core
             CheckEndState();
         }
 
-        public void ListenJoker(Joker joker)
+        public void TellAndListenJoker(Joker joker, string voiceInput = "")
         {
             if (joker == null)
                 return;
-            joker.Speak();
+            joker.Speak(voiceInput);
         }
 
         public void End()

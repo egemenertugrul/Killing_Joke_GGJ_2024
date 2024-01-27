@@ -56,9 +56,17 @@ namespace KillingJoke.Core
             _gameManager.CurrentSession.KillJoker(_gameManager.ActiveJoker);
         }
 
-        public void Listen()
+        public void StartTell()
         {
-            _gameManager.CurrentSession.ListenJoker(_gameManager.ActiveJoker);
+            _gameManager.StartListenPlayer();
+        }
+
+        public void StopTell()
+        {
+            _gameManager.StopListenPlayer((voiceInput) =>
+            {
+                _gameManager.CurrentSession.TellAndListenJoker(_gameManager.ActiveJoker, voiceInput);
+            });
         }
     }
 }
