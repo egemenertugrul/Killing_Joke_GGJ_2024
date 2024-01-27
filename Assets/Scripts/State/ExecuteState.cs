@@ -11,15 +11,35 @@ namespace KillingJoke.Core
         private float _time_to_kill = 1f;
         private bool _canPlay = false;
 
+        //public override void CheckSwitchStates()
+        //{
+        //    if (Input.GetMouseButtonDown(0))
+        //    {
+        //        _sm.Kill();
+        //    }
+        //    else if (Input.GetMouseButtonDown(1))
+        //    {
+        //        _sm.Forgive();
+        //    }
+        //    else if (Input.GetMouseButtonDown(2))
+        //    {
+        //        _sm.StartListen();
+        //    }
+        //    else if (Input.GetKeyDown(KeyCode.Space))
+        //    {
+        //        _sm.StopTellDefault();
+        //    }
+
+        //}
         public override void CheckSwitchStates()
         {
             if (Input.GetMouseButtonDown(0))
             {
-                _sm.Kill();
+                StartKill();
             }
             else if (Input.GetMouseButtonDown(1))
             {
-                _sm.Forgive();
+                StartForgive();
             }
             else if (Input.GetMouseButtonDown(2))
             {
@@ -28,6 +48,14 @@ namespace KillingJoke.Core
             else if (Input.GetKeyDown(KeyCode.Space))
             {
                 _sm.StopTellDefault();
+            }
+            else if (Input.GetKeyDown(KeyCode.B))
+            {
+                StopKillingAction();
+            }
+            else if (Input.GetKeyDown(KeyCode.N))
+            {
+                StopForgivingAction();
             }
 
         }
@@ -67,10 +95,13 @@ namespace KillingJoke.Core
         IEnumerator ForgiveTimer()
         {
             yield return new WaitForSeconds(_time_to_forgive);
+            _sm.Forgive();
         }
         IEnumerator KillTimer()
         {
             yield return new WaitForSeconds(_time_to_kill);
+            _sm.Kill();
+
         }
         public void StopForgivingAction()
         {
