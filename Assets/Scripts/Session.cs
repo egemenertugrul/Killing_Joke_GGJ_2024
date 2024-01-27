@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OpenAI;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace KillingJoke.Core
@@ -24,7 +27,8 @@ namespace KillingJoke.Core
         /// Generate a session from scratch.
         /// </summary>
         /// <param name="jokerCount"></param>
-        public void Initialize(JokerFactory jokerFactory, int jokerCount) {
+        public void Initialize(JokerFactory jokerFactory, int jokerCount)
+        {
             Initialize();
 
             jokers = new List<Joker>();
@@ -39,14 +43,15 @@ namespace KillingJoke.Core
             }
             this.jokersCount = jokerCount;
 
-            Begin();
+            //SetReplies();
         }
 
         /// <summary>
         /// Carry on from previous session.
         /// </summary>
         /// <param name="jokers">Preferably forgivenJokers.</param>
-        public void Initialize(List<Joker> jokers) {
+        public void Initialize(List<Joker> jokers)
+        {
             Initialize();
 
             if (jokers == null)
@@ -54,17 +59,30 @@ namespace KillingJoke.Core
 
             this.jokers = jokers;
             this.jokersCount = jokers.Count;
-            
-            Begin();
+
+            //SetReplies();
         }
 
-        public void Begin()
+        public void SetReplies(string voiceInput = "")
         {
-            //for (int i = 0; i < jokers.Count; i++)
-            //{
-            //    var joker = jokers[i];
-            //    joker.AssignNewSpeakPhrase("Hi, this is a joke!");
-            //}
+            ChatGPT.Instance.GetReply(voiceInput, (replies) =>
+            {
+                var formattedReplies = replies.Split(";").Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+                print(replies);
+
+                try
+                {
+                    for (int i = 0; i < jokers.Count; i++)
+                    {
+                        var joker = jokers[i];
+                        joker.AssignNewSpeakPhrase(formattedReplies[i]);
+                    }
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    Debug.LogError(e);
+                }
+            }, jokers.Count);
         }
 
         private void CheckEndState()
@@ -100,11 +118,11 @@ namespace KillingJoke.Core
             CheckEndState();
         }
 
-        public void TellAndListenJoker(Joker joker, string voiceInput = "")
+        public void ListenJoker(Joker joker)
         {
             if (joker == null)
                 return;
-            joker.Speak(voiceInput);
+            joker.Speak();
         }
 
         public void End()
@@ -114,12 +132,14 @@ namespace KillingJoke.Core
 
         private void DestroySelf(float delay = 0)
         {
-            if(delay > 0) {
+            if (delay > 0)
+            {
                 Destroy(gameObject, delay);
-            } else
+            }
+            else
             {
                 Destroy(gameObject);
-            } 
+            }
 
         }
     }

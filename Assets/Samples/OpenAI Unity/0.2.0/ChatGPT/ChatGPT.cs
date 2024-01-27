@@ -47,7 +47,7 @@ namespace OpenAI
         //    scroll.verticalNormalizedPosition = 0;
         //}
 
-        public async void GetReply(string voicePrompt, Joker.Attributes attributes, Action<string> Callback)
+        public async void GetReply(string voicePrompt, Action<string> Callback, int jokerCount = 0)
         {
             //_activateButton.onClick.Invoke();
             var newMessage = new ChatMessage()
@@ -60,7 +60,9 @@ namespace OpenAI
 
             if (messages.Count == 0) newMessage.Content = basePrompt + "\n" + voicePrompt;
 
-            newMessage.Content = newMessage.Content + $"\n You are the {attributes.ID}th Joker, so remember your character.";
+            //newMessage.Content = newMessage.Content + $"\n You are the {attributes.ID}th Joker, so remember your character.";
+            if(jokerCount > 0)
+                newMessage.Content = newMessage.Content + $"\n(Give me {jokerCount} different jokes. Each answer should end with a semicolon. Do not enumerate each joke, just keep it plain and simple.)";
 
             messages.Add(newMessage);
 

@@ -7,6 +7,7 @@
  */
 
 using Meta.WitAi.Dictation;
+using Meta.WitAi.Events;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -47,28 +48,22 @@ namespace Meta.Voice.Samples.Dictation
 
         public string TranscribedText { get => _transcribedText.Split('\n').Last(); set => _transcribedText = value; }
 
+        public WitTranscriptionEvent OnPartialTranscription = new WitTranscriptionEvent();
+        public WitTranscriptionEvent OnFullTranscription = new WitTranscriptionEvent();
+
         private void Awake()
         {
+            _dictation.DictationEvents.OnFullTranscription.AddListener((transcription)=> {
+                OnFullTranscription.Invoke(transcription);
+            });
+            _dictation.DictationEvents.OnPartialTranscription.AddListener((transcription) => {
+                OnPartialTranscription.Invoke(transcription);
+            });
+
             _dictation.DictationEvents.OnAborting.AddListener(() =>
             {
                 OnDictationStopped.Invoke(TranscribedText);
             });
         }
-
-        //public void ToggleActivation()
-        //{
-        //    if (_dictation.MicActive)
-        //    {
-        //        _dictation.Deactivate();
-        //    }
-        //    else
-        //    {
-        //        _dictation.Activate();
-        //    }
-
-        //    //_dictation.DictationEvents.OnPartialTranscription.AddListener(OnTranscriptionResponse);
-        //    //_dictation.DictationEvents.OnFullTranscription.AddListener(OnTranscriptionResponse);
-        //    //_dictation.DictationEvents.OnAborted.AddListener(() => { IsActive = false;  });
-        //}
     }
 }
