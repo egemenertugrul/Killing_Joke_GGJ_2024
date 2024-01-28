@@ -15,6 +15,7 @@ namespace KillingJoke.Core
         private bool isAlive = true;
         private TTSWitVoiceSettings voiceSetting;
         private Attributes attributes;
+        private Animator _jokerAnimator; 
         public bool IsAlive { get => isAlive; }
 
         private string _speakPhrase = "";
@@ -33,7 +34,10 @@ namespace KillingJoke.Core
         private void OnRagDollAction()
         {
             isAlive = false;
-            Destroy(_ragdoll_switch);
+            if(_ragdoll_switch !=null)
+            {
+                Destroy(_ragdoll_switch);
+            }
             Kill();
         }
         private void ResetHighlight()
@@ -63,6 +67,7 @@ namespace KillingJoke.Core
             Instantiate(mesh, transform);
             outline = GetComponentInChildren<SkinnedMeshRenderer>().gameObject.AddComponent<Outline>();
             outline.OutlineWidth = 0;
+            PlayAnimation();
 
             //for (int i = 0; i < jokerMeshBase.childCount; i++)
             //{
@@ -82,9 +87,20 @@ namespace KillingJoke.Core
             int randomIndex = Random.Range(0, TTSManager.Instance.Presets.Length);
             voiceSetting = TTSManager.Instance.Presets[randomIndex];
         }
-
-        public void Forgive()
+        private void PlayAnimation()
         {
+            if(attributes.isMale)
+            {
+                _jokerAnimator.Play("Talking Arguing");
+            }
+            else
+            {
+                _jokerAnimator.Play("Talking Softly");
+            }
+        }
+        public void Forgive()
+        {   
+
             if (!isAlive)
                 return;
             Debug.Log($"Forgiven Joker {attributes.ID}");

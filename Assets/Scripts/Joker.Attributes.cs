@@ -9,7 +9,7 @@ namespace KillingJoke.Core
             public static int Count = 0;
             public int ID;
             public Color color;
-
+            public bool isMale = true;
             public Attributes(int id, Color color)
             {
                 this.ID = id;
