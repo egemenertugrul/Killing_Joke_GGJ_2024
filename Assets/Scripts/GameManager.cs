@@ -36,7 +36,7 @@ namespace KillingJoke.Core
         }
         void Start()
         {
-            _ambientMusic.Play();
+            if(_ambientMusic != null) _ambientMusic.Play();
             _stateMachine.Init(this);
             hmdRaycaster.OnNewHighlight.AddListener(SetActiveJoker);
 
