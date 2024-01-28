@@ -61,10 +61,12 @@ namespace KillingJoke.Core
 
         public void SetMesh(GameObject mesh)
         {
+            attributes.isMale = !mesh.name.StartsWith("F_");
             transform.LookAt(Camera.main.transform);
             transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
 
-            Instantiate(mesh, transform);
+            GameObject newGO = Instantiate(mesh, transform);
+            _jokerAnimator = newGO.GetComponentInChildren<Animator>();
             outline = GetComponentInChildren<SkinnedMeshRenderer>().gameObject.AddComponent<Outline>();
             outline.OutlineWidth = 0;
 
