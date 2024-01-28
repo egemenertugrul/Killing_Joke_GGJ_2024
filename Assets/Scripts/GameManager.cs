@@ -16,7 +16,7 @@ namespace KillingJoke.Core
         [SerializeField] HmdRaycaster hmdRaycaster;
         [SerializeField] DictationActivation _dictation_activation;
         [SerializeField] MultiRequestTranscription _dictation_multirequest_transcription;
-
+        [SerializeField] AudioSource _ambientMusic;
         [SerializeField] private JokerFactory jokerFactory;
         [Range(1, 10)][SerializeField] private int jokerCount;
 
@@ -36,6 +36,7 @@ namespace KillingJoke.Core
         }
         void Start()
         {
+            _ambientMusic.Play();
             _stateMachine.Init(this);
             hmdRaycaster.OnNewHighlight.AddListener(SetActiveJoker);
 
