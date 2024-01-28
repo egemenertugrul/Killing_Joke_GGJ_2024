@@ -99,6 +99,19 @@ namespace KillingJoke.Core
             }
 
         }
+
+        public void ToggleTell()
+        {
+            if (_gameManager.isListening)
+            {
+                StopTell();
+            } else
+            {
+                StartTell();
+            }
+                
+        }
+
         public void StartTell()
         {
             _gameManager.StartListenPlayer();
@@ -106,10 +119,14 @@ namespace KillingJoke.Core
 
         public void StopTell()
         {
+            Debug.Log("Stop tell.");
+            
             _gameManager.StopListenPlayer((voiceInput) =>
             {
+                Debug.Log($"Result received. {voiceInput}");
+
                 //_gameManager.CurrentSession.TellAndListenJoker(_gameManager.ActiveJoker, voiceInput);
-                if(voiceInput.Length > 0)
+                if (voiceInput.Length > 0)
                     _gameManager.CurrentSession.SetReplies(voiceInput);
             });
         }

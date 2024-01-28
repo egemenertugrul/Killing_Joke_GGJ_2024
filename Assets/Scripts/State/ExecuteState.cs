@@ -23,7 +23,8 @@ namespace KillingJoke.Core
             }
             else if (Input.GetKeyDown(KeyCode.Space))
             {
-                _sm.StopTellDefault();
+                _sm.ToggleTell();
+                //_sm.StopTellDefault();
             }
 
         }

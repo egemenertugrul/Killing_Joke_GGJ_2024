@@ -24,6 +24,8 @@ namespace KillingJoke.Core
         private Joker _activeJoker;
 
         private Session _currentSession;
+        public bool isListening;
+
         public Session CurrentSession
         {
             get => _currentSession;
@@ -116,7 +118,8 @@ namespace KillingJoke.Core
 
         public void StartListenPlayer()
         {
-            _dictation_activation.OnFullTranscription.RemoveAllListeners();
+            isListening = true;
+            //_dictation_activation.OnFullTranscription.RemoveAllListeners();
 
             Debug.Log("Started listening to player..");
             _dictation_activation.IsActive = true;
@@ -124,9 +127,11 @@ namespace KillingJoke.Core
 
         public void StopListenPlayer(UnityAction<string> voiceInputCallback)
         {
+            isListening = false;
             Debug.Log($"Stopped listening to player.. Waiting for result..");
-            _dictation_activation.OnFullTranscription.AddListener(voiceInputCallback);
-            //_dictation_activation.OnDictationStopped.AddListener(voiceInputCallback);
+            voiceInputCallback.Invoke(_dictation_activation.TranscribedText);
+            //_dictation_activation.OnFullTranscription.AddListener((UnityAction<string>)voiceInputCallback.Clone());
+            //_dictation_activation.OnDictationStopped.AddListener((UnityAction<string>)voiceInputCallback.Clone());
             _dictation_activation.IsActive = false;
             //voiceInputCallback?.Invoke(_dictation_activation.TranscribedText);
             //_dictation_activation.OnDictationStopped.RemoveListener(voiceInputCallback);
