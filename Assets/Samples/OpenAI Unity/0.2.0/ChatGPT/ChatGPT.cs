@@ -23,7 +23,7 @@ namespace OpenAI
         [SerializeField] private RectTransform received;
 
         private float height;
-        private OpenAIApi openai = new OpenAIApi("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");
+        private OpenAIApi openai = new OpenAIApi("");
 
         private List<ChatMessage> messages = new List<ChatMessage>();
         private string basePrompt = "You act as a jester in medieval times. Respond accordingly. Always address king as 'my lord' at the start of your answer. Don't break character. Always give a different answer. Don't ever mention that you are an AI model.";
