@@ -67,7 +67,6 @@ namespace KillingJoke.Core
             Instantiate(mesh, transform);
             outline = GetComponentInChildren<SkinnedMeshRenderer>().gameObject.AddComponent<Outline>();
             outline.OutlineWidth = 0;
-            PlayAnimation();
 
             //for (int i = 0; i < jokerMeshBase.childCount; i++)
             //{
@@ -125,6 +124,8 @@ namespace KillingJoke.Core
 
         public void Speak()
         {
+            PlayAnimation();
+
             if (!isAlive)
             {
                 Debug.Log($"Joker {attributes.ID} is dead. What a joke.");
